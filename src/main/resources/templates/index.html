@@ -1,34 +1,14 @@
 <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8"/>
-        <link href="/css/styles.css" rel="stylesheet" type="text/css"/>
-        <title>TechShop</title>
-        <!--meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
-    </head>
+    <html xmlns="http://www.w3.org/1999/xhtml"
+          xmlns:th="http://www.thymeleaf.org"
+          xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+    <head th:replace="~{layout/plantilla :: head}"/>
     <body>
-        <header>
-            <nav>
-                <a class="logo nav-link" href="/">TechShop</a>
-                <ul class="nav-menu">
-                    <li class="nav-menu-item"> <a class="nav-link" href="/ejemplo2">Mis Autos</a></li>
-                    <li class="nav-menu-item"> <a class="nav-link" href="/multimedia">Multimedias</a></li>
-                    <li class="nav-menu-item"> <a class="nav-link" href="/iframe">iFrames</a></li>
-                </ul>
-            </nav>
-        </header>
-        <aside>
-            <h1>TechShop!</h1>
-            <p>Cada semana la tienda hace rifas entre sus clientes</p>
-        </aside>
-        <section>
-            <h2>Best TechShop!</h2>
-            <p>El mejor lugar para comprar productos de tech en el planeta!</p>
-            <marquee>I never knew I could use java with this </marquee>
-        </section>
-    <footer>
-        TechShop 2025 &COPY; Todos los Derechos Reservados
-    </footer>
+        <header th:replace="~{layout/plantilla :: header}"/>
+
+        
+    <footer th:replace="~{layout/plantilla :: footer}"/>
+
 
     </body>
 </html>
