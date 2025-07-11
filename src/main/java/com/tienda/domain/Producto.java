@@ -21,5 +21,8 @@ public class Producto implements Serializable{
     private String rutaImagen;
     private boolean activo;
     
+    @ManyToOne
+    @JoinColumn(name="id_categoria")
+    private Categoria categoria;
     
 }
