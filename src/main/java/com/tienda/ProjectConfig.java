@@ -1,16 +1,20 @@
 package com.tienda;
 
+import com.tienda.domain.Ruta;
+import com.tienda.service.RutaPermitService;
+import com.tienda.service.RutaService;
+import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.Locale;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -67,33 +71,25 @@ public class ProjectConfig implements WebMvcConfigurer {
         registro.addInterceptor(localeChangeInterceptor());
     }
 
+    @Autowired
+    private RutaService rutaService;
+
+    @Autowired
+    private RutaPermitService rutaPermitService;
+
     @Bean
-
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        String[] rutasPermit = rutaPermitService.getRutaPermitsString();
+        List<Ruta> rutas = rutaService.getRutas();
 
-        http
-                .authorizeHttpRequests((request) -> request
-                .requestMatchers("/", "/index", "/errores/**",
-                        "/carrito/**", "/pruebas/**", "/reportes/**",
-                        "/registro/**", "/js/**", "/webjars/**")
-                .permitAll()
-                .requestMatchers(
-                        "/producto/nuevo", "/producto/guardar",
-                        "/producto/modificar/**", "/producto/eliminar/**",
-                        "/categoria/nuevo", "/categoria/guardar",
-                        "/categoria/modificar/**", "/categoria/eliminar/**",
-                        "/usuario/nuevo", "/usuario/guardar",
-                        "/usuario/modificar/**", "/usuario/eliminar/**",
-                        "/reportes/**"
-                ).hasRole("ADMIN")
-                .requestMatchers(
-                        "/producto/listado",
-                        "/categoria/listado",
-                        "/usuario/listado"
-                ).hasAnyRole("ADMIN", "VENDEDOR")
-                .requestMatchers("/facturar/carrito")
-                .hasRole("USER")
-                )
+        http.authorizeHttpRequests((request) -> {
+            request
+                    .requestMatchers(rutasPermit).permitAll();
+            for (Ruta ruta : rutas) {
+                request.requestMatchers(ruta.getPatron()).hasRole(ruta.getRolName());
+            }
+        }
+        )
                 .formLogin((form) -> form
                 .loginPage("/login").permitAll())
                 .logout((logout) -> logout.permitAll());
@@ -105,30 +101,38 @@ public class ProjectConfig implements WebMvcConfigurer {
     /* El siguiente método se utiliza para completar la clase no es 
 
     realmente funcional, la próxima semana se reemplaza con usuarios de BD */
-    @Bean
+//    @Bean
+//
+//    public UserDetailsService users() {
+//
+//        UserDetails admin = User.builder()
+//                .username("juan")
+//                .password("{noop}"
+//                        + "")
+//                .roles("USER", "VENDEDOR", "ADMIN")
+//                .build();
+//
+//        UserDetails sales = User.builder()
+//                .username("rebeca")
+//                .password("{noop}456")
+//                .roles("USER", "VENDEDOR")
+//                .build();
+//
+//        UserDetails user = User.builder()
+//                .username("pedro")
+//                .password("{noop}789")
+//                .roles("USER")
+//                .build();
+//
+//        return new InMemoryUserDetailsManager(user, sales, admin);
+//
+//    }
+    @Autowired
+    private UserDetailsService userDetailsService;
 
-    public UserDetailsService users() {
-
-        UserDetails admin = User.builder()
-                .username("juan")
-                .password("{noop}123")
-                .roles("USER", "VENDEDOR", "ADMIN")
-                .build();
-
-        UserDetails sales = User.builder()
-                .username("rebeca")
-                .password("{noop}456")
-                .roles("USER", "VENDEDOR")
-                .build();
-
-        UserDetails user = User.builder()
-                .username("pedro")
-                .password("{noop}789")
-                .roles("USER")
-                .build();
-
-        return new InMemoryUserDetailsManager(user, sales, admin);
-
+    @Autowired
+    public void configurerGlobal(AuthenticationManagerBuilder build) throws Exception {
+        build.userDetailsService(userDetailsService).passwordEncoder(new BCryptPasswordEncoder());
     }
 
 }
