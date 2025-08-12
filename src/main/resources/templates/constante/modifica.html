@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml"
+          xmlns:th="http://www.thymeleaf.org"
+          xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+    <head th:replace="~{layout/plantilla :: head}"/>
+    <body>
+        <header th:replace="~{layout/plantilla :: header}"/>
+        <section th:replace="~{constante/fragmentos :: editarConstante}"/>
+
+        <!-- 3 Fragmento que se utiliza en la página modifca.html -->
+        <section th:fragment="editarConstante">
+            <div class="row">
+                <div class="col-md-2"></div>
+                <div class="col-md-8">
+                    <form method="POST"
+                          th:action="@{/constante/guardar}" 
+                          th:object="${constante}"
+                          class="was-validated"                          
+                          enctype="multipart/form-data">
+                        <input type="hidden" name="idConstante" th:field="*{idConstante}"/>
+                        <div class="container py-4 mb-4 bg-light">
+                            <div class="row">
+                                <div class="col-md-4 d-grid">
+                                    <a th:href="@{/constante/listado}" class="btn btn-primary">
+                                        <i class="fas fa-arrow-left"></i> [[#{accion.regresar}]]
+                                    </a>
+                                </div>
+                                <div class="col-md-4 d-grid">
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="fas fa-check"></i> [[#{accion.guardar}]]
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div id=details>
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h4>[[#{accion.actualizar}]]</h4>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="mb-3">
+                                                    <label for="atributo">[[#{constante.atributo}]]</label>
+                                                    <input type="text" class="form-control" 
+                                                           name="atributo" th:field="*{atributo}"
+                                                           required="true">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="valor">[[#{constante.valor}]]</label>
+                                                    <input type="text" class="form-control" 
+                                                           name="valor" th:field="*{valor}"
+                                                           required="true">
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+        
+    <footer th:replace="~{layout/plantilla :: footer}"/>
+
+
+    </body>
+</html>
