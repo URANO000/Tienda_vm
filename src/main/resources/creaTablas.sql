@@ -209,7 +209,8 @@ INSERT INTO ruta_permit (patron) VALUES
 ('/registro/**'),
 ('/fav/**'),
 ('/js/**'),
-('/webjars/**');
+('/webjars/**'),
+('/reportes/**');
 
 CREATE TABLE constante (
     id_constante INT AUTO_INCREMENT NOT NULL,
